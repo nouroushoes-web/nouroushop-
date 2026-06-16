@@ -1,0 +1,7 @@
+   <div class="produit">
+     <img src="lien-image.jpg">
+     <h3>Nom de tes baskets</h3>
+     <p>20000 FCFA</p>
+     <button>Acheter</button>
+   </div>
+    
