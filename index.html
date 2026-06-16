@@ -1,28 +1,121 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nourou Shoes</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#000">
-<style>body{font-family:Arial;padding:20px;background:#f5f5f5}h1{text-align:center} .prod{background:white;padding:15px;margin:10px;border-radius:10px;text-align:center}</style>
+<title>Nabila Shop - Catalogue</title>
+<style>
+body{font-family:Arial; margin:0; padding:0 0 70px 0; background:#f5f5f5}
+.header{padding:15px 12px 5px 12px; background:white}
+.header h1{margin:0; font-size:22px; font-weight:bold}
+.search{margin:10px 12px; background:#f5f5f5; border-radius:10px; padding:10px; display:flex; align-items:center; gap:8px}
+.search input{border:none; background:transparent; outline:none; width:100%; font-size:14px}
+
+/* CATEGORIES HAUT */
+.cats{display:flex; gap:8px; padding:10px 12px; overflow-x:auto; background:white}
+.cats button{flex:0 0 auto; border:1px solid #ddd; background:white; padding:8px 18px; border-radius:25px; font-size:14px; font-weight:500}
+.cats button.active{background:#8B2E4A; color:white; border-color:#8B2E4A}
+
+/* GRILLE PRODUITS 2 COLONNES */
+.grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:10px 12px}
+.produit{background:white; border-radius:12px; overflow:hidden; box-shadow:0 1px 3px #0001; display:none}
+.produit.show{display:block}
+.produit img{width:100%; height:180px; object-fit:cover}
+.badge{position:absolute; background:#e74c3c; color:white; padding:4px 8px; border-radius:8px; font-size:11px; font-weight:bold; margin:8px}
+.badge.nouveau{background:#27ae60}
+.cat-label{font-size:11px; color:gray; padding:8px 8px 0 8px; text-transform:uppercase}
+.nom{font-size:14px; font-weight:bold; padding:0 8px; margin:4px 0}
+.prix{color:#8B2E4A; font-size:16px; font-weight:bold; padding:0 8px 8px 8px}
+.prix-ancien{color:gray; font-size:12px; text-decoration:line-through; margin-left:5px}
+.box-img{position:relative}
+
+/* MENU BAS 3 ICONES */
+.menu{position:fixed; bottom:0; left:0; right:0; background:white; display:flex; border-top:1px solid #eee; padding:5px 0}
+.menu a{flex:1; text-align:center; text-decoration:none; color:gray; font-size:11px}
+.menu a.active{color:#8B2E4A}
+.menu a span{display:block; font-size:24px; margin-bottom:2px}
+.btn-panier{position:absolute; bottom:8px; right:8px; background:#8B2E4A; color:white; border:none; border-radius:50%; width:35px; height:35px; font-size:18px}
+</style>
 </head>
 <body>
-<h1>👟 Nourou Shoes</h1>
-<div class="prod">
-<h2>Basket Noir</h2>
-<p>25 000 FCFA</p>
-<button>Acheter</button>
+
+<div class="header"><h1>Catalogue</h1></div>
+
+<div class="search">
+  🔍 <input type="text" placeholder="Recher..." onkeyup="searchProd(this.value)">
 </div>
-<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}</script>
-</body>
-</html>
-<div class="produit">
-  <img src="lien-photo.jpg">
-  <h3>Nom Chaussure</h3>
-  <p>Pointures : 40, 41, 42</p>
-  <div class="prix">20 000 FCFA</div>
-  <a class="btn-wa" href="https://wa.me/22607099223?text=Bonjour%20Nouroushop%2C%20je%20commande%20Nom%20Chaussure%20Pointure%3A%20__">Commander sur WhatsApp</a>
-  <div class="paiement">Paiement OM/Moov/Wave : 07 09 92 23</div>
+
+<!-- CATEGORIES -->
+<div class="cats">
+  <button onclick="filterCat('all')" class="active">Tous</button>
+  <button onclick="filterCat('femme')">Femmes</button>
+  <button onclick="filterCat('homme')">Hommes</button>
+  <button onclick="filterCat('accessoire')">Accessoires</button>
 </div>
+
+<!-- GRILLE PRODUITS -->
+<div class="grid">
+
+  <!-- FEMME -->
+  <div class="produit show" data-cat="femme" data-nom="Escarpins Élégants">
+    <div class="box-img">
+      <span class="badge">-22%</span>
+      <img src="https://via.placeholder.com/300x300/8B2E4A/fff?text=Escarpins">
+      <button class="btn-panier" onclick="window.open('https://wa.me/22607099223?text=Commande%20Escarpins%20Elégants%20Pointure%3A%20__')">🛍️</button>
+    </div>
+    <div class="cat-label">FEMMES</div>
+    <div class="nom">Escarpins Élégants</div>
+    <div class="prix">25 000 FCFA<span class="prix-ancien">32 000 FCFA</span></div>
+  </div>
+
+  <div class="produit show" data-cat="femme" data-nom="Sandales Dorées">
+    <div class="box-img">
+      <span class="badge nouveau">Nouveau</span>
+      <img src="https://via.placeholder.com/300x300/FFD700/000?text=Sandales">
+      <button class="btn-panier" onclick="window.open('https://wa.me/22607099223?text=Commande%20Sandales%20Dorées%20Pointure%3A%20__')">🔄</button>
+    </div>
+    <div class="cat-label">FEMMES</div>
+    <div class="nom">Sandales Dorées</div>
+    <div class="prix">18 000 FCFA</div>
+  </div>
+
+  <!-- HOMME -->
+  <div class="produit show" data-cat="homme" data-nom="Chaussures Homme">
+    <div class="box-img">
+      <img src="https://via.placeholder.com/300x300/333/fff?text=Chaussures+Homme">
+      <button class="btn-panier" onclick="window.open('https://wa.me/22607099223?text=Commande%20Chaussures%20Homme%20Pointure%3A%20__')">🛍️</button>
+    </div>
+    <div class="cat-label">HOMMES</div>
+    <div class="nom">Chaussures Homme Cuir</div>
+    <div class="prix">22 000 FCFA</div>
+  </div>
+
+</div>
+
+<!-- MENU BAS -->
+<div class="menu">
+  <a href="#"><span>🏠</span>Accueil</a>
+  <a href="#" class="active"><span>⊞</span>Catalogue</a>
+  <a href="https://wa.me/22607099223"><span>💬</span>Contact</a>
+</div>
+
+<script>
+// FILTRE CATEGORIES
+function filterCat(cat){
+  document.querySelectorAll('.cats button').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  
+  document.querySelectorAll('.produit').forEach(p=>{
+    if(cat=='all' || p.dataset.cat==cat){
+      p.classList.add('show');
+    } else {
+      p.classList.remove('show');
+    }
+  });
+}
+
+// BARRE RECHERCHE
+function searchProd(val){
+  val = val.toLowerCase();
+ 
