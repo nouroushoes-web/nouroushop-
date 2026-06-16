@@ -1,7 +1,8 @@
 {
   "name": "Nourou Shoes",
   "short_name": "Nourou",
-  "start_url": "/",
+  "description": "Boutique de chaussures en ligne",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000",
@@ -12,7 +13,7 @@
       "type": "image/png"
     },
     {
-      "src": "icon-512.png",
+      "src": "icon-512.png", 
       "sizes": "512x512",
       "type": "image/png"
     }
