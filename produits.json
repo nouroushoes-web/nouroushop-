@@ -1,0 +1,16 @@
+[
+  {
+    "nom": "213 Strass New Lily",
+    "prix": 5000,
+    "cat": "Talons",
+    "desc": "Couleurs variées",
+    "img": "p11.jpg"
+  },
+  {
+    "nom": "FM490 3 Brides", 
+    "prix": 4500,
+    "cat": "Plateaux",
+    "desc": "Confortable",
+    "img": "FM490.jpg"
+  }
+]
