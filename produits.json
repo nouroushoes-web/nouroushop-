@@ -3,14 +3,14 @@
     "nom": "213 Strass New Lily",
     "prix": 5000,
     "cat": "Talons",
-    "desc": "Couleurs variées",
+    "desc": "Couleurs variées, pointure 37-41",
     "img": "p11.jpg"
   },
   {
-    "nom": "FM490 3 Brides", 
+    "nom": "FM490 3 Brides",
     "prix": 4500,
-    "cat": "Plateaux",
-    "desc": "Confortable",
+    "cat": "Plateaux", 
+    "desc": "Confortable, pointure 38-41",
     "img": "FM490.jpg"
   }
 ]
