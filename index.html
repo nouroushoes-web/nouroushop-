@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Nouroushoues Admin</title>
+<style>
+body{font-family:Poppins;background:#f5f5f5;margin:0}
+.header{background:#8B0000;color:white;text-align:center;padding:30px}
+.header h1{margin:0;letter-spacing:2px}
+.filters{display:flex;gap:10px;justify-content:center;padding:20px;background:white}
+.filter-btn{border:2px solid #8B0000;color:#8B0000;padding:8px 16px;border-radius:20px;cursor:pointer;background:white}
+.filter-btn.active{background:#8B0000;color:white}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;padding:20px;max-width:1100px;margin:auto}
+.card{background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 10px rgba(0,0,0,0.1);display:none;position:relative}
+.card.show{display:block}
+.card img{width:100%;height:220px;object-fit:cover}
+.card-body{padding:12px}
+.price{color:#8B0000;font-weight:bold;font-size:20px}
+.old{color:#999;text-decoration:line-through;font-size:13px;margin-left:8px}
+.btn{width:100%;background:#25D366;color:white;text-align:center;padding:10px;border-radius:8px;text-decoration:none;display:block;margin-top:8px;font-weight:600}
+
+/* ADMIN */
+.admin-panel{display:none;background:white;padding:20px;margin:20px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.admin-mode.admin-panel{display:block}
+.admin-btns{position:absolute;top:8px;right:8px;display:none;gap:5px}
+.admin-mode.admin-btns{display:flex}
+.btn-edit,.btn-del{background:orange;border:none;color:white;padding:5px 8px;border-radius:5px;cursor:pointer}
+.btn-del{background:red}
+.btn-add{position:fixed;bottom:25px;right:25px;width:55px;height:55px;border-radius:50%;background:#8B0000;color:white;border:none;font-size:30px;cursor:pointer;display:none}
+.admin-mode.btn-add{display:block}
+input,select{width:100%;padding:8px;margin:6px 0;border:1px solid #ddd;border-radius:6px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>NOUROUSHOUES</h1>
+  <p>+226 07 09 92 23</p>
+</div>
+
+<!-- PANEL ADMIN CACHÉ -->
+<div class="admin-panel">
+  <h3>➕ Ajouter / Modifier chaussure</h3>
+  <input id="nom" placeholder="Nom: Ex: Sandale cuir femme">
+  <input id="code" placeholder="Code: Ex: 42B-4">
+  <select id="cat">
+    <option value="tongs">Tongs</option>
+    <option value="talons">Talons</option>
+    <option value="babouches">Babouches</option>
+    <option value="baskets">Baskets</option>
+  </select>
+  <input id="prix" placeholder="Prix: 2500">
+  <input id="ancien" placeholder="Ancien prix: 3000">
+  <input id="desc" placeholder="Description: Pointures 38-42">
+  <input id="img" placeholder="Nom photo: sandale1.jpg">
+  <button onclick="sauvegarder()" style="background:#8B0000;color:white;border:none;padding:10px 20px;border-radius:6px;cursor:pointer">Sauvegarder</button>
+  <p style="font-size:12px;color:#666">Après sauvegarde → copie le code qui apparaît en bas et colle-le à la place de "let BDD = [...]"</p>
+  <textarea id="codeSortie" rows="6" style="width:100%;margin-top:10px"></textarea>
+</div>
+
+<div class="filters">
+  <button class="filter-btn active" onclick="filtrer('all')">Toutes</button>
+  <button class="filter-btn" onclick="filtrer('tongs')">Tongs</button>
+  <button class="filter-btn" onclick="filtrer('talons')">Talons</button>
+  <button class="filter-btn" onclick="filtrer('babouches')">Babouches</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<button class="btn-add" onclick="nouveau()">+</button>
+
+<script>
+// 1. MOT DE PASSE ADMIN
+const PASS = "1234";
+const WHATSAPP = "22607099223";
+
+// 2. BASE DE DONNÉES - TU MODIFIES QUE ICI
+let BDD = [
+  {id:1, cat:"tongs", code:"T01-38", nom:"Tongs femme confort", desc:"Pointures 38-41. Mousse", prix:"2500", ancien:"3000", img:"tongs1.jpg"},
+  {id:2, cat:"talons", code:"TL05-40", nom:"Talons aiguilles", desc:"10cm. Cuir verni", prix:"8500", ancien:"10000", img:"talon1.jpg"}
+];
+
+let editIndex = -1;
+
+// 3. Vérifie si admin
+if(new URLSearchParams(location.search).get('admin') === PASS) {
+  document.body.classList.add('admin-mode');
+}
+
+// 4. Afficher chaussures
+function afficher() {
+  grid.innerHTML = '';
+  BDD.forEach((c,i)=>{
+    grid.innerHTML += `
+    <div class="card ${c.cat}">
+      <div class="admin-btns">
+        <button class="btn-edit" onclick="editer(${i})">✏️</button>
+        <button class="btn-del" onclick="supprimer(${i})">🗑️</button>
+      </div>
+      <img src="${c.img}">
+      <div class="card-body">
+        <div style="font-size:12px;color:#999">Code: ${c.code}</div>
+        <div style="font-weight:600;margin:5px 0">${c.nom}</div>
+        <div style="font-size:13px;color:#666;min-height:35px">${c.desc}</div>
+        <div><span class="price">${c.prix} F</span><span class="old">${c.ancien} F</span></div>
+        <a class="btn" href="https://wa.me/${WHATSAPP}?text=Commande%20${c.nom}%20${c.code}%20${c.prix}F" target="_blank">Commander WhatsApp</a>
+      </div>
+    </div>`;
+  });
+  filtrer('all');
+}
+
+// 5. Filtrer
+function filtrer(cat) {
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.card').forEach(card=>{
+    card.classList.toggle('show', cat==='all' || card.classList.contains(cat));
+  });
+}
+
+// 6. ADMIN : Nouveau
+function nouveau(){
+  editIndex = -1;
+  document.querySelectorAll('#nom,#code,#prix,#ancien,#desc,#img').forEach(i=>i.value='');
+}
+
+// 7. ADMIN : Editer
+function editer(i){
+  editIndex = i;
+  let c = BDD[i];
+  nom.value=c.nom; code.value=c.code; cat.value=c.cat; prix.value=c.prix; ancien.value=c.ancien; desc.value=c.desc; img.value=c.img;
+  window.scrollTo(0,0);
+}
+
+// 8. ADMIN : Sauvegarder
+function sauvegarder(){
+  let obj = {id:editIndex==-1?Date.now():BDD[editIndex].id, cat:cat.value, code:code.value, nom:nom.value, desc:desc.value, prix:prix.value, ancien:ancien.value, img:img.value};
+  if(editIndex==-1) BDD.push(obj);
+  else BDD[editIndex]=obj;
+
+  codeSortie.value = 'let BDD = ' + JSON.stringify(BDD, null, 2) + ';';
+  afficher();
+  alert('✅ Copie le code dans le rectangle en bas et colle-le sur GitHub à la place de "let BDD = [...]"');
+}
+
+// 9. ADMIN : Supprimer
+function supprimer(i){
+  if(confirm('Supprimer '+BDD[i].nom+'?')) {
+    BDD.splice(i,1);
+    sauvegarder();
+  }
+}
+
+afficher();
+</script>
+</body>
+</html>
